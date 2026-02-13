@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>网易模组维基 · 页面制作器</title>
+    <title>模组维基 · 页面制作器 (最终·浅蓝·纵向标签·直接复制br)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* ========== 全局零圆角 & 浅蓝背景 ========== */
@@ -134,29 +134,33 @@
             line-height: 1.6;
         }
 
-        /* ========== 动画提示条（滑入淡出）========= */
-        .toast-message {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #2e7d32;
-            color: white;
-            padding: 12px 24px;
-            font-size: 14px;
-            font-weight: 500;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 9999;
-            display: none;
-            border: 2px solid #1b5e20;
-            opacity: 0;
-            transform: translateX(30px);
-            transition: opacity 0.25s ease, transform 0.3s ease;
-        }
-        .toast-message.show {
-            display: block;
-            opacity: 1;
-            transform: translateX(0);
-        }
+        
+        /* 动画提示条（修复版） */
+.toast-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #2e7d32;
+    color: white;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 9999;
+    border: 2px solid #1b5e20;
+    
+    /* 关键修改：用 visibility + opacity 代替 display */
+    visibility: hidden;
+    opacity: 0;
+    transform: translateX(30px);
+    transition: opacity 0.25s ease, transform 0.3s ease, visibility 0.25s ease;
+}
+
+.toast-message.show {
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(0);
+}
 
         /* ========== 预览区域 ========== */
         .preview-section {
@@ -314,19 +318,30 @@
             min-width: 130px;
         }
 
-        /* 纵向标签：模组页分类标签改为纵向排列 */
-        .vertical-checkbox-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 8px;
-        }
-        .vertical-checkbox-group label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 0;
-        }
+        /* 纵向复选框组 - 紧凑版 */
+.vertical-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;                  /* 上下间距 */
+    margin-top: 8px;
+}
+.vertical-checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 4px;                 /* 复选框与文字间距 */
+    white-space: nowrap;      /* 禁止换行 */
+    font-size: 14px;          /* 可微调 */
+    margin-bottom: 0;
+    cursor: pointer;
+}
+.vertical-checkbox-group input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;           /* 防止被压缩 */
+    margin: 0;
+    accent-color: #2c6e9c;   /* 主题色（可选） */
+}
+
 
         /* 上下双行布局（快速代码） */
         .vertical-stack {
@@ -713,59 +728,100 @@ table          = class="wikitable sortable", 模组名称, 售价
         </div>
     </div>
 
-    <!-- ========= 第四行卡片：DPL快速生成 ========= -->
-    <div class="card-grid">
-        <div class="card">
-            <h2>⚡ DPL快速生成</h2>
+   <!-- ========= 第四行卡片：DPL快速生成 + 自定义表格生成器 ========= -->
+<div class="card-grid">
+    <!-- DPL快速生成卡片（原卡片，保持不变） -->
+    <div class="card">
+        <h2>⚡ DPL快速生成</h2>
+        <div class="field">
+            <label>📋 模板类型</label>
+            <select id="dpl_template_type">
+                <option value="list">① 分类无序列表</option>
+                <option value="devtable">② 开发者售价表</option>
+                <option value="randomprice">③ 随机5条带售价</option>
+                <option value="custom">④ 自定义DPL</option>
+            </select>
+        </div>
+        <div id="dpl_custom_params" style="background:#f3f7fb; padding:16px; margin-top:16px;">
             <div class="field">
-                <label>📋 模板类型</label>
-                <select id="dpl_template_type">
-                    <option value="list">① 分类无序列表</option>
-                    <option value="devtable">② 开发者售价表</option>
-                    <option value="randomprice">③ 随机5条带售价</option>
-                    <option value="custom">④ 自定义DPL</option>
-                </select>
+                <label>🎯 分类（可多个，用|分隔）</label>
+                <input type="text" id="dpl_category" placeholder="官方推荐" value="官方推荐">
             </div>
-            <div id="dpl_custom_params" style="background:#f3f7fb; padding:16px; margin-top:16px;">
-                <div class="field">
-                    <label>🎯 分类（可多个，用|分隔）</label>
-                    <input type="text" id="dpl_category" placeholder="官方推荐" value="官方推荐">
+            <div class="flex-row">
+                <div style="flex:1;">
+                    <label>🔢 显示数量</label>
+                    <input type="number" id="dpl_count" value="5" min="1" max="50">
                 </div>
-                <div class="flex-row">
-                    <div style="flex:1;">
-                        <label>🔢 显示数量</label>
-                        <input type="number" id="dpl_count" value="5" min="1" max="50">
-                    </div>
-                    <div style="flex:1;">
-                        <label>⚙️ 排序方式</label>
-                        <select id="dpl_order">
-                            <option value="title">标题</option>
-                            <option value="lastedit">最后编辑</option>
-                            <option value="random">随机</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="field">
-                    <label>🧾 显示模式</label>
-                    <select id="dpl_mode">
-                        <option value="unordered">无序列表</option>
-                        <option value="table">表格（带售价）</option>
-                        <option value="inline">内联</option>
+                <div style="flex:1;">
+                    <label>⚙️ 排序方式</label>
+                    <select id="dpl_order">
+                        <option value="title">标题</option>
+                        <option value="lastedit">最后编辑</option>
+                        <option value="random">随机</option>
                     </select>
                 </div>
             </div>
-            <button class="ore-button" id="genDplTemplateBtn">
-                <span class="button-face">📊 生成DPL代码</span>
-                <span class="shadow-bar"></span>
-            </button>
-            <div class="card-copy-wrapper">
-                <button class="ore-button small" id="copyDplTemplateBtn">
-                    <span class="button-face">📋 复制DPL代码</span>
-                    <span class="shadow-bar"></span>
-                </button>
+            <div class="field">
+                <label>🧾 显示模式</label>
+                <select id="dpl_mode">
+                    <option value="unordered">无序列表</option>
+                    <option value="table">表格（带售价）</option>
+                    <option value="inline">内联</option>
+                </select>
             </div>
         </div>
+        <button class="ore-button" id="genDplTemplateBtn">
+            <span class="button-face">📊 生成DPL代码</span>
+            <span class="shadow-bar"></span>
+        </button>
+        <div class="card-copy-wrapper">
+            <button class="ore-button small" id="copyDplTemplateBtn">
+                <span class="button-face">📋 复制DPL代码</span>
+                <span class="shadow-bar"></span>
+            </button>
+        </div>
     </div>
+
+    <!-- ===== 新增：自定义表格生成器 ===== -->
+    <div class="card">
+        <h2>📋 自定义表格生成器</h2>
+        <!-- 表格标题（可选） -->
+        <div class="field">
+            <label>🏷️ 表格标题（可选）</label>
+            <input type="text" id="table_caption" placeholder="例如：模组参数对比" value="模组列表">
+        </div>
+        <!-- 列标题：每行一个 -->
+        <div class="field">
+            <label>📌 列标题（每行一个）</label>
+            <textarea id="table_headers" rows="3" placeholder="模组名称&#10;开发者&#10;售价">模组名称
+开发者
+售价</textarea>
+        </div>
+        <!-- 行数据：每行一条，单元格用逗号分隔 -->
+        <div class="field">
+            <label>📝 行数据（每行一条，逗号分隔）</label>
+            <textarea id="table_rows" rows="4" placeholder="无尽矿机,张三工作室,15元&#10;量子发电机,李四工作室,免费">无尽矿机,张三工作室,15元
+量子发电机,李四工作室,免费</textarea>
+            <p style="margin:4px 0 0; font-size:0.8em; color:#4a6a7c;">单元格值用 <strong>英文逗号</strong> 分隔，每行代表一行。</p>
+        </div>
+        <!-- 样式选项 -->
+        <div style="margin-bottom:16px; display:flex; gap:20px;">
+            <label style="display:flex; align-items:center; gap:6px;">
+                <input type="checkbox" id="table_sortable" checked> 🔀 可排序 (sortable)
+            </label>
+        </div>
+        <button class="ore-button" id="genTableBtn">
+            <span class="button-face">📊 生成表格代码</span>
+            <span class="shadow-bar"></span>
+        </button>
+        <div class="card-copy-wrapper">
+            <button class="ore-button small" id="copyTableBtn">
+                <span class="button-face">📋 复制表格代码</span>
+                <span class="shadow-bar"></span>
+            </button>
+        </div>
+    </div>
+</div>
 
     <div class="footer-note">
         ⚙️ 完全本地运行 · Miraheze 模组维基专用<br>
@@ -1054,7 +1110,63 @@ table          = class="wikitable sortable", 模组名称, 售价
             if (lastDplTemplateCode) fallbackCopy(lastDplTemplateCode, '📋 DPL代码已复制');
             else showToast('⚠️ 请先生成DPL代码');
         });
+// ========= 11. 自定义表格生成器 =========
+let lastTableCode = '';
 
+document.getElementById('genTableBtn').addEventListener('click', function() {
+    // 读取输入
+    const caption = document.getElementById('table_caption').value.trim();
+    const headersText = document.getElementById('table_headers').value.trim();
+    const rowsText = document.getElementById('table_rows').value.trim();
+    const sortable = document.getElementById('table_sortable').checked;
+
+    // 解析列标题：按行分割，过滤空行
+    const headers = headersText.split('\n')
+        .map(line => line.trim())
+        .filter(line => line !== '');
+    if (headers.length === 0) {
+        showToast('⚠️ 请至少填写一列标题');
+        return;
+    }
+
+    // 开始构建表格
+    let tableCode = `{| class="wikitable${sortable ? ' sortable' : ''}"\n`;
+    if (caption) {
+        tableCode += `|+ ${caption}\n`;
+    }
+
+    // 表头行
+    tableCode += '! ' + headers.join(' !! ') + '\n';
+
+    // 解析行数据
+    const rows = rowsText.split('\n')
+        .map(line => line.trim())
+        .filter(line => line !== '');
+    for (let row of rows) {
+        // 按逗号分割单元格（支持中英文逗号？这里要求英文逗号）
+        const cells = row.split(',').map(cell => cell.trim());
+        // 只取与列数相同的单元格，多余忽略，不足留空
+        const filledCells = [];
+        for (let i = 0; i < headers.length; i++) {
+            filledCells.push(cells[i] || '');
+        }
+        tableCode += '|-\n';
+        tableCode += '| ' + filledCells.join(' || ') + '\n';
+    }
+
+    tableCode += '|}';
+
+    // 更新预览和存储
+    updateOutput(tableCode, (code) => lastTableCode = code);
+});
+
+document.getElementById('copyTableBtn').addEventListener('click', function() {
+    if (lastTableCode) {
+        fallbackCopy(lastTableCode, '📋 表格代码已复制');
+    } else {
+        showToast('⚠️ 请先生成表格代码');
+    }
+});
     })();
 </script>
 
