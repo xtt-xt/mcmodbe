@@ -3,9 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>模组维基 · 页面制作器 (纯白按钮·独立复制)</title>
+    <title>模组维基 · 页面制作器 (零圆角·重定向·无弹窗)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        /* ========== 全局零圆角 ========== */
+        * {
+            border-radius: 0 !important;
+        }
+
         /* ========== Ore UI 按钮 · 纯白版 ========== */
         .ore-button {
             display: inline-flex;
@@ -15,7 +20,6 @@
             padding: 0;
             cursor: pointer;
             position: relative;
-            border-radius: 0;
             font-family: 'Noto Sans SC', sans-serif;
             background: none;
             background-color: transparent;
@@ -31,9 +35,8 @@
             outline: none;
         }
 
-        /* 按钮主体 —— 纯白背景，无渐变 */
         .button-face {
-            background: #ffffff;        /* 纯白 */
+            background: #ffffff;
             width: 100%;
             padding: 14px 24px;
             text-align: center;
@@ -47,7 +50,6 @@
             box-sizing: border-box;
         }
 
-        /* 底部阴影条 —— 浅灰 */
         .shadow-bar {
             width: 100%;
             height: 6px;
@@ -56,15 +58,13 @@
             border: none;
         }
 
-        /* 悬停微调 */
         .ore-button:hover .button-face {
-            background: #f8f8f8;       /* 极浅灰 */
+            background: #f8f8f8;
         }
         .ore-button:hover .shadow-bar {
             background: #a0a0a0;
         }
 
-        /* 按下 —— 整体下沉，阴影消失，按钮变浅灰 */
         .ore-button:active {
             transform: translateY(4px);
         }
@@ -73,10 +73,10 @@
             height: 0;
         }
         .ore-button:active .button-face {
-            background: #e0e0e0;       /* 按压灰 */
+            background: #e0e0e0;
         }
 
-        /* 小型按钮（用于复制、内嵌） */
+        /* 小型按钮 */
         .ore-button.small {
             width: auto;
             display: inline-flex;
@@ -91,7 +91,7 @@
             height: 4px;
         }
 
-        /* ========== 页面布局样式 ========== */
+        /* ========== 页面布局（零圆角）========== */
         body {
             font-family: 'Noto Sans SC', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background: #f5f7fa;
@@ -111,14 +111,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
-        }
-        h1 span {
-            background: #2c6e9c;
-            color: white;
-            font-size: 0.5em;
-            padding: 6px 14px;
-            border-radius: 40px;
-            font-weight: 400;
+            /* 已移除右侧span */
         }
         .sub {
             color: #4a5c6e;
@@ -127,15 +120,29 @@
             border-left: 5px solid #8aaec0;
             padding-left: 18px;
             background: #eef3f7;
-            border-radius: 0 12px 12px 0;
             line-height: 1.6;
         }
 
-        /* 预览区域置顶 */
+        /* 无弹窗提示条（绿色，顶栏固定） */
+        .toast-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #2e7d32;
+            color: white;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 9999;
+            display: none;
+            border: 2px solid #1b5e20;
+        }
+
+        /* 预览区域 */
         .preview-section {
             margin-bottom: 40px;
             background: #1e2b3c;
-            border-radius: 24px;
             padding: 24px 28px;
             color: #e6edf3;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
@@ -157,7 +164,6 @@
         }
         .preview-area {
             background: #0f1a24;
-            border-radius: 16px;
             padding: 20px 24px;
             font-family: 'JetBrains Mono', 'Fira Code', monospace;
             font-size: 0.9em;
@@ -178,7 +184,6 @@
         }
         .card {
             background: white;
-            border-radius: 24px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.02), 0 2px 6px rgba(0,20,30,0.02);
             padding: 24px 28px;
             transition: all 0.2s;
@@ -215,7 +220,6 @@
             width: 100%;
             padding: 10px 14px;
             border: 1px solid #cbd5e1;
-            border-radius: 12px;
             font-size: 0.95em;
             background: white;
             transition: 0.15s;
@@ -243,7 +247,6 @@
             align-items: center;
             background: #f2f6f9;
             padding: 10px 14px;
-            border-radius: 16px;
             margin-bottom: 12px;
         }
         .color-item {
@@ -255,7 +258,6 @@
             width: 40px;
             height: 40px;
             padding: 4px;
-            border-radius: 8px;
             border: 1px solid #cbd5e1;
         }
         hr {
@@ -265,7 +267,6 @@
         }
         .tool-group {
             background: #f8fbfd;
-            border-radius: 16px;
             padding: 16px;
             margin-top: 12px;
         }
@@ -293,29 +294,38 @@
             width: auto;
             min-width: 130px;
         }
-        .card-footer {
-            margin-top: auto;
+
+        /* 双列快速布局 */
+        .double-row {
+            display: flex;
+            gap: 20px;
+            align-items: stretch;
+        }
+        .double-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
     </style>
 </head>
 <body>
+    <!-- 无弹窗提示条（绿色，顶栏固定） -->
+    <div id="toast" class="toast-message">✅ 代码已复制</div>
+
 <div class="container">
-    <h1>
-        🧱 模组维基 · 页面制作器 
-        <span>纯白按钮·独立复制</span>
-    </h1>
+    <h1>🧱 模组维基 · 页面制作器</h1>
     <div class="sub">
-        ⚡ 每张卡片独立复制 · 按钮纯白 · 图片默认250px · 分类/快速代码已拆分
+        ⚡ 零圆角 · 重定向生成器 · 图片大小可留空 · br/p 独立 · 无弹窗提示
     </div>
 
-    <!-- ========= 全局预览区（仅展示，复制用各卡片独立按钮）========= -->
+    <!-- ========= 全局预览区 ========= -->
     <div class="preview-section">
         <div class="preview-header">
             <h2>📋 全局代码预览</h2>
         </div>
         <div class="preview-area" id="output">
-👋 点击任一卡片「生成」按钮，代码显示于此。
-点击该卡片下方的「📋 复制代码」按钮，单独复制该卡片生成的内容。
+👋 点击卡片「生成」按钮，代码显示于此。
+点击卡片下方的「📋 复制」按钮，单独复制该卡片生成的内容。
         </div>
     </div>
 
@@ -360,7 +370,7 @@
                 <label>📝 模组简介（自动左对齐）</label>
                 <textarea id="mod_desc" placeholder="添加了30+种冷兵器与火器。">添加了30+种冷兵器与火器。</textarea>
             </div>
-            <div style="background: #f0f5fa; border-radius: 16px; padding: 16px; margin: 16px 0;">
+            <div style="background: #f0f5fa; padding: 16px; margin: 16px 0;">
                 <label style="margin-bottom: 12px; font-size:1em;">🏷️ 分类标签</label>
                 <select id="mod_pay_status" style="width:100%; margin-bottom:12px;">
                     <option value="">—— 付费状态 ——</option>
@@ -384,7 +394,6 @@
                 <span class="button-face">✨ 生成模组页代码</span>
                 <span class="shadow-bar"></span>
             </button>
-            <!-- 独立复制按钮 -->
             <div class="card-copy-wrapper">
                 <button class="ore-button small" id="copyModBtn">
                     <span class="button-face">📋 复制模组页代码</span>
@@ -400,9 +409,9 @@
                 <label>🎯 开发者分类名</label>
                 <input type="text" id="dev_cat" placeholder="开发者:张三工作室" value="开发者:张三工作室">
             </div>
-            <div style="background: #f3f7fb; border-radius: 14px; padding: 16px; margin-bottom: 16px;">
+            <div style="background: #f3f7fb; padding: 16px; margin-bottom: 16px;">
                 <p style="margin:0 0 8px; font-weight:600;">📋 固定代码模板：</p>
-                <pre style="background:#e2ecf5; padding:12px; border-radius:10px; font-size:0.85em; overflow-x:auto;">
+                <pre style="background:#e2ecf5; padding:12px; font-size:0.85em; overflow-x:auto;">
 &lt;DPL&gt;
 category       = 开发者:星天xt
 namespace      = 主名字空间
@@ -454,9 +463,9 @@ table          = class="wikitable sortable", 模组名称, 售价
         </div>
     </div>
 
-    <!-- ========= 第二行卡片：拆分后的三个独立工具 + 图片插入 ========= -->
+    <!-- ========= 第二行卡片：样式文本、分类生成、图片插入 ========= -->
     <div class="card-grid">
-        <!-- 卡片4-1：自定义样式文本（原拆分1） -->
+        <!-- 卡片4：自定义样式文本 -->
         <div class="card">
             <h2>🎨 自定义样式文本</h2>
             <div class="field">
@@ -504,7 +513,7 @@ table          = class="wikitable sortable", 模组名称, 售价
             </div>
         </div>
 
-        <!-- 卡片4-2：分类快速生成（原拆分2） -->
+        <!-- 卡片5：分类快速生成 -->
         <div class="card">
             <h2>🏷️ 分类快速生成</h2>
             <div class="field">
@@ -523,7 +532,7 @@ table          = class="wikitable sortable", 模组名称, 售价
             </div>
         </div>
 
-        <!-- 卡片5：图片插入生成器（原卡片5，默认250px） -->
+        <!-- 卡片6：图片插入生成器（大小留空则不添加） -->
         <div class="card">
             <h2>🖼️ 图片插入生成器</h2>
             <div class="field">
@@ -542,8 +551,8 @@ table          = class="wikitable sortable", 模组名称, 售价
                     </select>
                 </div>
                 <div style="flex:1;">
-                    <label>📏 大小（默认250px）</label>
-                    <input type="text" id="img_size" placeholder="250px" value="250px">
+                    <label>📏 大小（留空则不添加）</label>
+                    <input type="text" id="img_size" placeholder="250px" value="">
                 </div>
             </div>
             <div class="flex-row">
@@ -569,38 +578,52 @@ table          = class="wikitable sortable", 模组名称, 售价
         </div>
     </div>
 
-    <!-- ========= 第三行卡片：快速代码 + 彩色文本框 + DPL预设 ========= -->
+    <!-- ========= 第三行卡片：快速代码（br与p完全独立）、彩色文本框、重定向生成器 ========= -->
     <div class="card-grid">
-        <!-- 卡片4-3：快速代码生成（原拆分3） -->
+        <!-- 卡片7：快速代码 · br / p 独立双区 -->
         <div class="card">
-            <h2>⚡ 快速代码</h2>
-            <div style="display:flex; flex-direction:column; gap:16px;">
-                <div style="display:flex; gap:10px; align-items:flex-end;">
-                    <button class="ore-button small" id="genBrBtn" style="width:auto;">
-                        <span class="button-face">生成 &lt;br&gt;</span>
-                        <span class="shadow-bar"></span>
-                    </button>
-                    <div style="flex:1; display:flex; gap:6px;">
-                        <input type="text" id="p_text" placeholder="段落文字" value="这是段落。">
-                        <button class="ore-button small" id="genPBtn">
-                            <span class="button-face">包为&lt;p&gt;</span>
+            <h2>⚡ 快速代码 · 独立双区</h2>
+            <div class="double-row">
+                <!-- 左：<br> 区 -->
+                <div class="double-col">
+                    <div style="background: #f3f7fb; padding: 16px; margin-bottom: 8px;">
+                        <h4 style="margin-top:0; margin-bottom:12px;">&lt;br&gt; 换行</h4>
+                        <button class="ore-button small" id="genBrBtn" style="width:100%;">
+                            <span class="button-face">生成 &lt;br&gt;</span>
                             <span class="shadow-bar"></span>
                         </button>
+                        <div style="margin-top:12px;">
+                            <button class="ore-button small" id="copyBrBtn" style="width:100%;">
+                                <span class="button-face">📋 复制 &lt;br&gt;</span>
+                                <span class="shadow-bar"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- 右：<p> 区 -->
+                <div class="double-col">
+                    <div style="background: #f3f7fb; padding: 16px; margin-bottom: 8px;">
+                        <h4 style="margin-top:0; margin-bottom:12px;">&lt;p&gt; 段落</h4>
+                        <div style="display:flex; gap:8px; margin-bottom:12px;">
+                            <input type="text" id="p_text" placeholder="段落文字" value="这是段落。">
+                        </div>
+                        <button class="ore-button small" id="genPBtn" style="width:100%;">
+                            <span class="button-face">生成 &lt;p&gt;</span>
+                            <span class="shadow-bar"></span>
+                        </button>
+                        <div style="margin-top:12px;">
+                            <button class="ore-button small" id="copyPBtn" style="width:100%;">
+                                <span class="button-face">📋 复制 &lt;p&gt;</span>
+                                <span class="shadow-bar"></span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div style="margin-top:20px;">
-                <button class="ore-button" id="genBrOnlyBtn" style="display:none;">占位</button>
-            </div>
-            <div class="card-copy-wrapper" style="margin-top:24px;">
-                <button class="ore-button small" id="copyQuickCodeBtn">
-                    <span class="button-face">📋 复制快速代码</span>
-                    <span class="shadow-bar"></span>
-                </button>
-            </div>
+            <!-- 此卡片不设统一复制按钮，各自独立 -->
         </div>
 
-        <!-- 卡片6：彩色文本框（左侧竖线） -->
+        <!-- 卡片8：彩色文本框（左侧竖线） -->
         <div class="card">
             <h2>🎛️ 彩色文本框（左侧竖线）</h2>
             <div class="field">
@@ -623,10 +646,6 @@ table          = class="wikitable sortable", 模组名称, 售价
             </div>
             <div style="display:flex; gap:12px; margin-bottom:16px;">
                 <div style="flex:1;">
-                    <label>圆角 (px)</label>
-                    <input type="number" id="box_radius" value="12" min="0" max="30">
-                </div>
-                <div style="flex:1;">
                     <label>左侧竖线宽 (px)</label>
                     <input type="number" id="box_border_width" value="5" min="1" max="20">
                 </div>
@@ -643,7 +662,33 @@ table          = class="wikitable sortable", 模组名称, 售价
             </div>
         </div>
 
-        <!-- 卡片7：DPL快速生成（原卡片7） -->
+        <!-- 卡片9：重定向生成器（新增） -->
+        <div class="card">
+            <h2>↪️ 重定向生成器</h2>
+            <div class="field">
+                <label>🎯 目标页面（必填）</label>
+                <input type="text" id="redirect_target" placeholder="模组:无尽矿机" value="模组:无尽矿机">
+            </div>
+            <div class="field">
+                <label>📄 源页面名（可选，仅提示）</label>
+                <input type="text" id="redirect_source" placeholder="无尽矿机（新）" value="">
+                <p style="margin:4px 0 0; font-size:0.8em; color:#4a6a7c;">生成代码为 <code>#REDIRECT [[目标页面]]</code>，源页面名仅作标识。</p>
+            </div>
+            <button class="ore-button" id="genRedirectBtn">
+                <span class="button-face">↪️ 生成重定向</span>
+                <span class="shadow-bar"></span>
+            </button>
+            <div class="card-copy-wrapper">
+                <button class="ore-button small" id="copyRedirectBtn">
+                    <span class="button-face">📋 复制重定向</span>
+                    <span class="shadow-bar"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========= 第四行卡片：DPL快速生成 ========= -->
+    <div class="card-grid">
         <div class="card">
             <h2>⚡ DPL快速生成</h2>
             <div class="field">
@@ -655,7 +700,7 @@ table          = class="wikitable sortable", 模组名称, 售价
                     <option value="custom">④ 自定义DPL</option>
                 </select>
             </div>
-            <div id="dpl_custom_params" style="background:#f3f7fb; border-radius:14px; padding:16px; margin-top:16px;">
+            <div id="dpl_custom_params" style="background:#f3f7fb; padding:16px; margin-top:16px;">
                 <div class="field">
                     <label>🎯 分类（可多个，用|分隔）</label>
                     <input type="text" id="dpl_category" placeholder="官方推荐" value="官方推荐">
@@ -698,7 +743,7 @@ table          = class="wikitable sortable", 模组名称, 售价
 
     <div class="footer-note">
         ⚙️ 完全本地运行 · Miraheze 模组维基专用<br>
-        纯白按钮 · 每卡独立复制 · 仅兼容复制模式 · 图片默认250px · 分类/快速代码已拆分
+        零圆角 · 重定向生成器 · 图片大小可留空 · br/p 独立复制 · 无弹窗提示
     </div>
 </div>
 
@@ -707,16 +752,26 @@ table          = class="wikitable sortable", 模组名称, 售价
         "use strict";
 
         const outputEl = document.getElementById('output');
+        const toast = document.getElementById('toast');
 
-        // ---------- 仅保留兼容复制模式 (document.execCommand) ----------
-        function fallbackCopy(text) {
+        // ---------- 无弹窗提示：显示绿色条，2秒后消失 ----------
+        function showToast(text = '✅ 代码已复制') {
+            toast.style.display = 'block';
+            toast.innerText = text;
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 2000);
+        }
+
+        // ---------- 兼容复制（无弹窗，仅提示条）----------
+        function fallbackCopy(text, successMsg = '✅ 代码已复制') {
             const textarea = document.createElement('textarea');
             textarea.value = text;
             document.body.appendChild(textarea);
             textarea.select();
             document.execCommand('copy');
             document.body.removeChild(textarea);
-            alert('✅ 代码已复制');
+            showToast(successMsg);
         }
 
         // ========= 各卡片代码存储变量 =========
@@ -726,8 +781,10 @@ table          = class="wikitable sortable", 模组名称, 售价
         let lastStyledTextCode = '';
         let lastCatCode = '';
         let lastImgCode = '';
-        let lastQuickCode = '';
+        let lastBrCode = '';      // <br> 独立存储
+        let lastPCode = '';       // <p> 独立存储
         let lastBoxCode = '';
+        let lastRedirectCode = '';
         let lastDplTemplateCode = '';
 
         // ---------- 通用更新预览及存储 ----------
@@ -777,8 +834,8 @@ table          = class="wikitable sortable", 模组名称, 售价
             updateOutput(wikitext, (code) => lastModCode = code);
         });
         document.getElementById('copyModBtn').addEventListener('click', function() {
-            if (lastModCode) fallbackCopy(lastModCode);
-            else alert('请先生成模组页代码');
+            if (lastModCode) fallbackCopy(lastModCode, '📋 模组页代码已复制');
+            else showToast('⚠️ 请先生成模组页代码');
         });
 
         // ========= 2. 开发者DPL表格 =========
@@ -789,8 +846,8 @@ table          = class="wikitable sortable", 模组名称, 售价
             updateOutput(dpl, (code) => lastDplCode = code);
         });
         document.getElementById('copyDplBtn').addEventListener('click', function() {
-            if (lastDplCode) fallbackCopy(lastDplCode);
-            else alert('请先生成DPL表格');
+            if (lastDplCode) fallbackCopy(lastDplCode, '📋 DPL表格已复制');
+            else showToast('⚠️ 请先生成DPL表格');
         });
 
         // ========= 3. 开发者简介 =========
@@ -810,8 +867,8 @@ table          = class="wikitable sortable", 模组名称, 售价
             updateOutput(profile, (code) => lastDevCode = code);
         });
         document.getElementById('copyDevBtn').addEventListener('click', function() {
-            if (lastDevCode) fallbackCopy(lastDevCode);
-            else alert('请先生成开发者简介');
+            if (lastDevCode) fallbackCopy(lastDevCode, '📋 开发者简介已复制');
+            else showToast('⚠️ 请先生成开发者简介');
         });
 
         // ========= 4. 样式文本 =========
@@ -837,8 +894,8 @@ table          = class="wikitable sortable", 模组名称, 售价
             updateOutput(result, (code) => lastStyledTextCode = code);
         });
         document.getElementById('copyStyledTextBtn').addEventListener('click', function() {
-            if (lastStyledTextCode) fallbackCopy(lastStyledTextCode);
-            else alert('请先生成样式文本');
+            if (lastStyledTextCode) fallbackCopy(lastStyledTextCode, '📋 样式文本已复制');
+            else showToast('⚠️ 请先生成样式文本');
         });
 
         // ========= 5. 分类生成 =========
@@ -848,11 +905,11 @@ table          = class="wikitable sortable", 模组名称, 售价
             updateOutput(code, (c) => lastCatCode = c);
         });
         document.getElementById('copyCatBtn').addEventListener('click', function() {
-            if (lastCatCode) fallbackCopy(lastCatCode);
-            else alert('请先生成分类代码');
+            if (lastCatCode) fallbackCopy(lastCatCode, '📋 分类代码已复制');
+            else showToast('⚠️ 请先生成分类代码');
         });
 
-        // ========= 6. 图片插入（默认250px） =========
+        // ========= 6. 图片插入（大小留空不添加） =========
         document.getElementById('genImgBtn').addEventListener('click', function() {
             const file = document.getElementById('img_file').value.trim();
             if (!file) {
@@ -861,13 +918,13 @@ table          = class="wikitable sortable", 模组名称, 售价
                 return;
             }
             let align = document.getElementById('img_align').value;
-            let size = document.getElementById('img_size').value.trim() || '250px';
+            let size = document.getElementById('img_size').value.trim(); // 不填则为空字符串
             let link = document.getElementById('img_link').value.trim();
             let caption = document.getElementById('img_caption').value.trim();
 
             let parts = [file];
             if (align) parts.push(align);
-            if (size) parts.push(size);
+            if (size) parts.push(size);   // 仅当有内容时才添加
             if (link) parts.push(`link=${link}`);
             if (caption) parts.push(caption);
 
@@ -875,26 +932,30 @@ table          = class="wikitable sortable", 模组名称, 售价
             updateOutput(imgCode, (c) => lastImgCode = c);
         });
         document.getElementById('copyImgBtn').addEventListener('click', function() {
-            if (lastImgCode) fallbackCopy(lastImgCode);
-            else alert('请先生成图片代码');
+            if (lastImgCode) fallbackCopy(lastImgCode, '📋 图片代码已复制');
+            else showToast('⚠️ 请先生成图片代码');
         });
 
-        // ========= 7. 快速代码（<br> 和 <p>） =========
+        // ========= 7. 快速代码：完全独立 =========
         // 生成 <br>
         document.getElementById('genBrBtn').addEventListener('click', function() {
             const code = '<br>';
-            updateOutput(code, (c) => lastQuickCode = c);
+            updateOutput(code, (c) => lastBrCode = c);
         });
+        document.getElementById('copyBrBtn').addEventListener('click', function() {
+            if (lastBrCode) fallbackCopy(lastBrCode, '📋 <br> 已复制');
+            else showToast('⚠️ 请先生成 <br> 代码');
+        });
+
         // 生成 <p>
         document.getElementById('genPBtn').addEventListener('click', function() {
             const pText = document.getElementById('p_text').value.trim() || '段落文字';
             const code = `<p>${pText}</p>`;
-            updateOutput(code, (c) => lastQuickCode = c);
+            updateOutput(code, (c) => lastPCode = c);
         });
-        // 快速代码复制按钮
-        document.getElementById('copyQuickCodeBtn').addEventListener('click', function() {
-            if (lastQuickCode) fallbackCopy(lastQuickCode);
-            else alert('请先生成快速代码（<br> 或 <p>）');
+        document.getElementById('copyPBtn').addEventListener('click', function() {
+            if (lastPCode) fallbackCopy(lastPCode, '📋 <p> 已复制');
+            else showToast('⚠️ 请先生成 <p> 代码');
         });
 
         // ========= 8. 彩色文本框 =========
@@ -903,19 +964,34 @@ table          = class="wikitable sortable", 模组名称, 售价
             const borderColor = document.getElementById('box_border_color').value;
             const bgColor = document.getElementById('box_bg_color').value;
             const textColor = document.getElementById('box_text_color').value;
-            const radius = document.getElementById('box_radius').value || 12;
             const borderWidth = document.getElementById('box_border_width').value || 5;
 
-            const style = `style="border-left: ${borderWidth}px solid ${borderColor}; background-color: ${bgColor}; color: ${textColor}; padding: 12px 18px; border-radius: ${radius}px; margin: 10px 0;"`;
+            const style = `style="border-left: ${borderWidth}px solid ${borderColor}; background-color: ${bgColor}; color: ${textColor}; padding: 12px 18px; margin: 10px 0;"`;
             const box = `<div ${style}>${text}</div>`;
             updateOutput(box, (c) => lastBoxCode = c);
         });
         document.getElementById('copyBoxBtn').addEventListener('click', function() {
-            if (lastBoxCode) fallbackCopy(lastBoxCode);
-            else alert('请先生成文本框');
+            if (lastBoxCode) fallbackCopy(lastBoxCode, '📋 文本框已复制');
+            else showToast('⚠️ 请先生成文本框');
         });
 
-        // ========= 9. DPL模板生成 =========
+        // ========= 9. 重定向生成器 =========
+        document.getElementById('genRedirectBtn').addEventListener('click', function() {
+            const target = document.getElementById('redirect_target').value.trim();
+            if (!target) {
+                const err = '错误：目标页面不能为空';
+                updateOutput(err, (c) => lastRedirectCode = c);
+                return;
+            }
+            const redirect = `#REDIRECT [[${target}]]`;
+            updateOutput(redirect, (c) => lastRedirectCode = c);
+        });
+        document.getElementById('copyRedirectBtn').addEventListener('click', function() {
+            if (lastRedirectCode) fallbackCopy(lastRedirectCode, '↪️ 重定向已复制');
+            else showToast('⚠️ 请先生成重定向');
+        });
+
+        // ========= 10. DPL模板生成 =========
         document.getElementById('genDplTemplateBtn').addEventListener('click', function() {
             const type = document.getElementById('dpl_template_type').value;
             let category = document.getElementById('dpl_category').value.trim();
@@ -949,8 +1025,8 @@ table          = class="wikitable sortable", 模组名称, 售价
             updateOutput(dplCode, (c) => lastDplTemplateCode = c);
         });
         document.getElementById('copyDplTemplateBtn').addEventListener('click', function() {
-            if (lastDplTemplateCode) fallbackCopy(lastDplTemplateCode);
-            else alert('请先生成DPL代码');
+            if (lastDplTemplateCode) fallbackCopy(lastDplTemplateCode, '📋 DPL代码已复制');
+            else showToast('⚠️ 请先生成DPL代码');
         });
 
     })();
