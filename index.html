@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>模组维基 · 页面制作器 (最终·浅蓝·纵向标签·直接复制br)</title>
+    <title>模组维基 · 页面制作器</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* ========== 全局零圆角 & 浅蓝背景 ========== */
@@ -822,7 +822,38 @@ table          = class="wikitable sortable", 模组名称, 售价
         </div>
     </div>
 </div>
-
+<!-- ========= 第五行卡片：代表模组生成器 ========= -->
+<div class="card-grid">
+    <div class="card">
+        <h2>📚 代表模组生成器</h2>
+        <!-- 模组名列表：每行一个 -->
+        <div class="field">
+            <label>📝 模组名（每行一个）</label>
+            <textarea id="rep_mod_names" rows="5" placeholder="森罗物语：厨房&#10;森罗物语：玩偶">森罗物语：厨房
+森罗物语：玩偶</textarea>
+            <p style="margin:4px 0 0; font-size:0.8em; color:#4a6a7c;">每行一个模组名，图片将自动添加 <code>.png</code> 后缀，链接与显示名均使用模组名。</p>
+        </div>
+        <!-- 可选参数（暂固定，未来可扩展） -->
+        <div style="margin-bottom:16px; display:flex; gap:20px;">
+            <label style="display:flex; align-items:center; gap:6px;">
+                <span>🖼️ 尺寸：100px（固定）</span>
+            </label>
+            <label style="display:flex; align-items:center; gap:6px;">
+                <span>↔️ 对齐：left（固定）</span>
+            </label>
+        </div>
+        <button class="ore-button" id="genRepModBtn">
+            <span class="button-face">🖼️ 生成代表模组代码</span>
+            <span class="shadow-bar"></span>
+        </button>
+        <div class="card-copy-wrapper">
+            <button class="ore-button small" id="copyRepModBtn">
+                <span class="button-face">📋 复制代表模组代码</span>
+                <span class="shadow-bar"></span>
+            </button>
+        </div>
+    </div>
+</div>
     <div class="footer-note">
         ⚙️ 完全本地运行 · Miraheze 模组维基专用<br>
         浅蓝背景 · 纵向复选框 · 快速代码上下摆 · 复制br一键直取 · 按压动画修复 · 提示淡入淡出
@@ -1165,6 +1196,39 @@ document.getElementById('copyTableBtn').addEventListener('click', function() {
         fallbackCopy(lastTableCode, '📋 表格代码已复制');
     } else {
         showToast('⚠️ 请先生成表格代码');
+    }
+});
+// ========= 12. 代表模组生成器 =========
+let lastRepModCode = '';
+
+document.getElementById('genRepModBtn').addEventListener('click', function() {
+    const modNamesText = document.getElementById('rep_mod_names').value.trim();
+    if (!modNamesText) {
+        showToast('⚠️ 请至少填写一个模组名');
+        return;
+    }
+
+    const modNames = modNamesText.split('\n')
+        .map(line => line.trim())
+        .filter(line => line !== '');
+
+    // 生成每个模组的图片链接
+    const imageLinks = modNames.map(name => {
+        const fileName = `${name}.png`;
+        return `  [[File:${fileName}|thumb|left|100px|link=${name}|${name}]]`;
+    }).join('\n');
+
+    // 包裹 flex 容器
+    const code = `<div style="display: flex; gap: 10px; flex-wrap: wrap;">\n${imageLinks}\n</div>`;
+
+    updateOutput(code, (c) => lastRepModCode = c);
+});
+
+document.getElementById('copyRepModBtn').addEventListener('click', function() {
+    if (lastRepModCode) {
+        fallbackCopy(lastRepModCode, '📋 代表模组代码已复制');
+    } else {
+        showToast('⚠️ 请先生成代表模组代码');
     }
 });
     })();
