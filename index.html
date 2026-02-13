@@ -433,18 +433,20 @@
                     <option value="绿宝石模组">绿宝石模组</option>
                 </select>
                 <!-- 纵向排列复选框（一行一个） -->
-                <div class="vertical-checkbox-group">
-                    <label>
-                        <input type="checkbox" id="mod_high_download"> 📥 高下载模组
-                    </label>
-                    <label>
-                        <input type="checkbox" id="mod_official"> 🏅 官方推荐
-                    </label>
-                    <label>
-                        <input type="checkbox" id="mod_featured"> ⭐ 精选模组
-                    </label>
-                </div>
-            </div>
+<div class="vertical-checkbox-group">
+    <label>
+        <input type="checkbox" id="mod_high_download"> 📥 高下载模组
+    </label>
+    <label>
+        <input type="checkbox" id="mod_official"> 🏅 官方推荐
+    </label>
+    <label>
+        <input type="checkbox" id="mod_featured"> ⭐ 精选模组
+    </label>
+    <label>
+        <input type="checkbox" id="mod_mountain"> 🗻 山头模组
+    </label>
+</div>
             <button class="ore-button" id="genModBtn">
                 <span class="button-face">✨ 生成模组页代码</span>
                 <span class="shadow-bar"></span>
@@ -920,8 +922,9 @@ table          = class="wikitable sortable", 模组名称, 售价
             let desc = document.getElementById('mod_desc').value.trim() || '添加了30+种冷兵器与火器。';
             const payStatus = document.getElementById('mod_pay_status').value;
             const highDownload = document.getElementById('mod_high_download').checked;
-            const official = document.getElementById('mod_official').checked;
-            const featured = document.getElementById('mod_featured').checked;
+const official = document.getElementById('mod_official').checked;
+const featured = document.getElementById('mod_featured').checked;
+const mountain = document.getElementById('mod_mountain').checked;  // 新增
 
             desc = `<div style="text-align:left;">${desc}</div>`;
 
@@ -938,11 +941,12 @@ table          = class="wikitable sortable", 模组名称, 售价
             wikitext += `|description  = ${desc}\n`;
             wikitext += `}}\n\n`;
             wikitext += `<span style="display:none;">{{模组售价|${price}}}</span>\n\n`;
-            wikitext += `[[Category:开发者:${dev}]]\n`;
-            if (payStatus) wikitext += `[[Category:${payStatus}]]\n`;
-            if (highDownload) wikitext += `[[Category:高下载模组]]\n`;
-            if (official) wikitext += `[[Category:官方推荐]]\n`;
-            if (featured) wikitext += `[[Category:精选模组]]\n`;
+wikitext += `[[Category:开发者:${dev}]]\n`;
+if (payStatus) wikitext += `[[Category:${payStatus}]]\n`;
+if (highDownload) wikitext += `[[Category:高下载模组]]\n`;
+if (official) wikitext += `[[Category:官方推荐]]\n`;
+if (featured) wikitext += `[[Category:精选模组]]\n`;
+if (mountain) wikitext += `[[Category:山头模组]]\n`;
 
             updateOutput(wikitext, (code) => lastModCode = code);
         });
